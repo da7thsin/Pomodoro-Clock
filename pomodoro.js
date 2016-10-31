@@ -70,7 +70,7 @@ function clickEvents(){
         $('.settings').removeClass('active inactive');
         $(a).toggleClass('active');
         $(b).toggleClass('inactive');
-        tickID = setInterval(tick, 100);
+        tickID = setInterval(tick, 1000);
       }
     }
 
