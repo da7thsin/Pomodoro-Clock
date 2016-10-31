@@ -11,16 +11,11 @@ function clickEvents(){
   }
 
   function timeTick(){
-    started = true;
-
-    $('.session').addClass('active');
-    $('.break').addClass('inactive');
-
-    var minuteVal = $('.active .min'), minute = parseInt(minuteVal.text());
-    var secondVal = $('.active .sec'), second = parseInt(secondVal.text());
-
 
     function tick(){
+      var minuteVal = $('.active .min'), minute = parseInt(minuteVal.text());
+      var secondVal = $('.active .sec'), second = parseInt(secondVal.text());
+
       second--;
 
       if(second < 0){
@@ -32,7 +27,12 @@ function clickEvents(){
       secondVal.text(addZero(second));
     }
 
-    var intervalID = setInterval(tick,1000);
+    if(!$('.settings').hasClass('active')){
+      started = true;
+      $('.session').addClass('active');
+      $('.break').addClass('inactive');
+      setInterval(tick, 1000);
+    }
 
   }
 
@@ -41,7 +41,7 @@ function clickEvents(){
 
     now.addClass('active');
 
-    if(!activated && now.hasClass('active')){
+    if(!started && !activated && now.hasClass('active')){
       activated = true;
       $('.active .min').addClass('highlight');
     }
@@ -67,7 +67,7 @@ function clickEvents(){
       closest = closest.prev().find('.num');
     }
 
-    if(activeDiv && !now.hasClass('higlight') && closest.hasClass('highlight')){
+    if(!started && activeDiv && !now.hasClass('higlight') && closest.hasClass('highlight')){
       now.addClass('highlight');
       closest.removeClass('highlight');
     }
@@ -78,22 +78,24 @@ function clickEvents(){
     var highlighted = $('.highlight');
     var value = parseInt(highlighted.text());
 
-    if(highlighted.hasClass('min')){
-      if(value < 30){
-        value++;
-        highlighted.text(addZero(value));
+    if(!started){
+      if(highlighted.hasClass('min')){
+        if(value < 30){
+          value++;
+          highlighted.text(addZero(value));
+        }
+        else{
+          highlighted.text(addZero(1));
+        }
       }
       else{
-        highlighted.text(addZero(1));
-      }
-    }
-    else{
-      if(value < 59){
-        value++;
-        highlighted.text(addZero(value));
-      }
-      else{
-        highlighted.text(addZero(0));
+        if(value < 59){
+          value++;
+          highlighted.text(addZero(value));
+        }
+        else{
+          highlighted.text(addZero(0));
+        }
       }
     }
 
@@ -103,30 +105,30 @@ function clickEvents(){
     var highlighted = $('.highlight');
     var value = parseInt(highlighted.text());
 
-    if(highlighted.hasClass('min')){
-      if(value > 1){
-        value--;
-        highlighted.text(addZero(value));
+    if(!started){
+      if(highlighted.hasClass('min')){
+        if(value > 1){
+          value--;
+          highlighted.text(addZero(value));
+        }
+        else{
+          highlighted.text(addZero(30));
+        }
       }
       else{
-        highlighted.text(addZero(30));
-      }
-    }
-    else{
-      if(value > 1){
-        value--;
-        highlighted.text(addZero(value));
-      }
-      else{
-        highlighted.text(addZero(59));
+        if(value > 1){
+          value--;
+          highlighted.text(addZero(value));
+        }
+        else{
+          highlighted.text(addZero(59));
+        }
       }
     }
 
   });
 
-  $('.start').click(function(){
-      timeTick();
-  });
+  $('.start').click(timeTick);
 
   $('.back').click(function(){
     if(!started){
