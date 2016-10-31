@@ -1,5 +1,9 @@
 function clickEvents(){
-  var started = false, activated = false;
+  var started = false;
+  var activated = false;
+  var typeA = '.session';
+  var typeB = '.break';
+  var tickID;
 
   function addZero(num){
     if(num < 10){
@@ -10,8 +14,28 @@ function clickEvents(){
     }
   }
 
+  function reset(){
+    if(!started){
+      typeA = '.session';
+      typeB = '.break';
+      $('.session .min').text('25');
+      $('.session .sec').text('00');
+      $('.break .min').text('05');
+      $('.break .sec').text('00');
+    }
+  }
+
   function timeTick(){
-    var tickID;
+
+    if(!$('.num').hasClass('highlight') && !started){
+      startQue(typeA,typeB);
+      $('.start').text('stop');
+    }
+    else if(started){
+      started = false;
+      clearInterval(tickID);
+      $('.start').text('start');
+    }
 
     function tick(){
       var minuteVal = $('.active .min'), minute = parseInt(minuteVal.text());
@@ -32,44 +56,43 @@ function clickEvents(){
       secondVal.text(addZero(second));
     }
 
-    function startQue(typeA, typeB){
-      if($('.break').hasClass('active')){
+    function startQue(a, b){
+      typeA = a;
+      typeB = b;
+
+      if($('.break').hasClass('active') && started){
         started = false;
         $('.settings').removeClass('active inactive');
+        setTimeout(reset,100);
       }
       else{
+        started = true;
         $('.settings').removeClass('active inactive');
-        $(typeA).toggleClass('active');
-        $(typeB).toggleClass('inactive');
+        $(a).toggleClass('active');
+        $(b).toggleClass('inactive');
         tickID = setInterval(tick, 100);
       }
-
-    }
-
-    if(!$('.settings').hasClass('active')){
-      started = true;
-      startQue('.session','.break');
     }
 
   }
 
-  $('.start').click(timeTick);
-
   $('.settings').click(function(){
     var now = $(this);
 
-    now.addClass('active');
+    if(!started){
+      now.addClass('active');
 
-    if(!started && !activated && now.hasClass('active')){
-      activated = true;
-      $('.active .min').addClass('highlight');
-    }
+      if(!activated && now.hasClass('active')){
+        activated = true;
+        $('.active .min').addClass('highlight');
+      }
 
-    if(now.next().length == 0){
-      now.prev().addClass('inactive');
-    }
-    else{
-      now.next().addClass('inactive');
+      if(now.next().length == 0){
+        now.prev().addClass('inactive');
+      }
+      else{
+        now.next().addClass('inactive');
+      }
     }
 
   });
@@ -155,14 +178,9 @@ function clickEvents(){
     }
   });
 
-  $('.reset').click(function(){
-    if(!started){
-      $('.session .min').text('25');
-      $('.session .sec').text('00');
-      $('.break .min').text('05');
-      $('.break .sec').text('00');
-    }
-  });
+  $('.reset').click(reset);
+
+  $('.start').click(timeTick);
 
 }
 
