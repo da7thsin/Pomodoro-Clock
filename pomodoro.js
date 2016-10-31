@@ -1,5 +1,5 @@
 function clickEvents(){
-  var started = false;
+  var started = false, activated = false;
 
   function addZero(num){
     if(num < 10){
@@ -41,32 +41,87 @@ function clickEvents(){
 
     now.addClass('active');
 
+    if(!activated && now.hasClass('active')){
+      activated = true;
+      $('.active .min').addClass('highlight');
+    }
+
     if(now.next().length == 0){
       now.prev().addClass('inactive');
     }
     else{
       now.next().addClass('inactive');
     }
+
+  });
+
+  $('.num').click(function(){
+    var activeDiv = $('.settings').hasClass('active');
+    var now = $(this);
+    var closest = now.closest('div');
+
+    if(closest.next().length){
+      closest = closest.next().find('.num');
+    }
+    else{
+      closest = closest.prev().find('.num');
+    }
+
+    if(activeDiv && !now.hasClass('higlight') && closest.hasClass('highlight')){
+      now.addClass('highlight');
+      closest.removeClass('highlight');
+    }
+
   });
 
   $('#up').click(function(){
-    var minVal = $('.active .min');
-    var minute = parseInt(minVal.text());
+    var highlighted = $('.highlight');
+    var value = parseInt(highlighted.text());
 
-    if(minute < 25){
-      minute++;
-      minVal.text(addZero(minute));
+    if(highlighted.hasClass('min')){
+      if(value < 30){
+        value++;
+        highlighted.text(addZero(value));
+      }
+      else{
+        highlighted.text(addZero(1));
+      }
     }
+    else{
+      if(value < 59){
+        value++;
+        highlighted.text(addZero(value));
+      }
+      else{
+        highlighted.text(addZero(0));
+      }
+    }
+
   });
 
   $('#down').click(function(){
-    var minVal = $('.active .min');
-    var minute = parseInt(minVal.text());
+    var highlighted = $('.highlight');
+    var value = parseInt(highlighted.text());
 
-    if(minute > 1){
-      minute--;
-      minVal.text(addZero(minute));
+    if(highlighted.hasClass('min')){
+      if(value > 1){
+        value--;
+        highlighted.text(addZero(value));
+      }
+      else{
+        highlighted.text(addZero(30));
+      }
     }
+    else{
+      if(value > 1){
+        value--;
+        highlighted.text(addZero(value));
+      }
+      else{
+        highlighted.text(addZero(59));
+      }
+    }
+
   });
 
   $('.start').click(function(){
@@ -75,8 +130,10 @@ function clickEvents(){
 
   $('.back').click(function(){
     if(!started){
+      activated = false;
       $('.settings').removeClass('active');
       $('.settings').removeClass('inactive');
+      $('.num').removeClass('highlight');
     }
   });
 
