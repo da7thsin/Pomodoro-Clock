@@ -11,11 +11,11 @@ function clickEvents(){
   }
 
   function timeTick(){
+    var tickID;
 
     function tick(){
       var minuteVal = $('.active .min'), minute = parseInt(minuteVal.text());
       var secondVal = $('.active .sec'), second = parseInt(secondVal.text());
-
       second--;
 
       if(second < 0){
@@ -23,18 +23,37 @@ function clickEvents(){
         minute--;
       }
 
+      if(!minute && !second){
+        clearInterval(tickID);
+        startQue('.break','.session');
+      }
+
       minuteVal.text(addZero(minute));
       secondVal.text(addZero(second));
     }
 
+    function startQue(typeA, typeB){
+      if($('.break').hasClass('active')){
+        started = false;
+        $('.settings').removeClass('active inactive');
+      }
+      else{
+        $('.settings').removeClass('active inactive');
+        $(typeA).toggleClass('active');
+        $(typeB).toggleClass('inactive');
+        tickID = setInterval(tick, 100);
+      }
+
+    }
+
     if(!$('.settings').hasClass('active')){
       started = true;
-      $('.session').addClass('active');
-      $('.break').addClass('inactive');
-      setInterval(tick, 1000);
+      startQue('.session','.break');
     }
 
   }
+
+  $('.start').click(timeTick);
 
   $('.settings').click(function(){
     var now = $(this);
@@ -128,13 +147,10 @@ function clickEvents(){
 
   });
 
-  $('.start').click(timeTick);
-
   $('.back').click(function(){
     if(!started){
       activated = false;
-      $('.settings').removeClass('active');
-      $('.settings').removeClass('inactive');
+      $('.settings').removeClass('active inactive');
       $('.num').removeClass('highlight');
     }
   });
