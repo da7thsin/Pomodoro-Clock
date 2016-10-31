@@ -116,7 +116,7 @@ function clickEvents(){
         }
       }
       else{
-        if(value > 1){
+        if(value > 0){
           value--;
           highlighted.text(addZero(value));
         }
