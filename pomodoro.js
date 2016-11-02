@@ -63,6 +63,7 @@ function clickEvents(){
       typeB = b;
 
       if($('.break').hasClass('active') && started){
+        $('.start').text('start');
         started = false;
         $('.settings').removeClass('active inactive');
         setTimeout(reset,100);
