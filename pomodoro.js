@@ -1,3 +1,5 @@
+var audio = new Audio('http://www.freesound.org/data/previews/13/13119_35389-lq.mp3');
+
 function clickEvents(){
   var started = false;
   var activated = false;
@@ -66,6 +68,7 @@ function clickEvents(){
         setTimeout(reset,100);
       }
       else{
+        audio.play();
         started = true;
         $('.settings').removeClass('active inactive');
         $(a).toggleClass('active');
